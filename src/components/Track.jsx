@@ -1,6 +1,22 @@
-function Track({ title }) {
+import { useContext } from "react";
+import { StudioContext } from "../context/StudioContext";
+
+function Track({ id, title }) {
+
+  const { removeTrack } = useContext(StudioContext);
+
   return (
     <div className="track">
+
+      {id !== "base" && id !== "user" && (
+        <button
+          className="btn btn-delete-track"
+          onClick={() => removeTrack(id)}
+        >
+          ✕
+        </button>
+      )}
+
       <input
         type="text"
         defaultValue={title}
@@ -38,6 +54,7 @@ function Track({ title }) {
         <canvas className="visualizer"></canvas>
         <div className="playhead"></div>
       </div>
+
     </div>
   );
 }

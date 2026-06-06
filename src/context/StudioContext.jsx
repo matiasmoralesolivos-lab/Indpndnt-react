@@ -8,6 +8,7 @@ function StudioProvider({ children }) {
       id: "base",
       name: "Base",
       type: "base",
+      visible: true,
       armed: false,
       recording: false,
       monitor: false,
@@ -18,6 +19,7 @@ function StudioProvider({ children }) {
       id: "user",
       name: "Tu grabación",
       type: "user",
+      visible: true,
       armed: false,
       recording: false,
       monitor: false,
@@ -28,6 +30,12 @@ function StudioProvider({ children }) {
 
   const [masterVolume, setMasterVolume] = useState(1);
 
+  // Layout de la pantalla
+  // 1 = una columna
+  // 2 = dos columnas
+
+  const [layout, setLayout] = useState(1);
+
   const addTrack = () => {
     if (tracks.length >= 6) return;
 
@@ -35,6 +43,7 @@ function StudioProvider({ children }) {
       id: crypto.randomUUID(),
       name: `Músico ${tracks.length - 1}`,
       type: "dynamic",
+      visible: true,
       armed: false,
       recording: false,
       monitor: false,
@@ -45,13 +54,23 @@ function StudioProvider({ children }) {
     setTracks([...tracks, newTrack]);
   };
 
-  const removeTrack = (id) => {
+const removeTrack = (id) => {
+  if (id === "base" || id === "user") return;
+
+  setTracks((prevTracks) =>
+    prevTracks.filter((track) => track.id !== id)
+  );
+};
+
+  const toggleTrackVisibility = (id) => {
     setTracks(
-      tracks.filter(
-        (track) =>
-          track.id !== id &&
-          track.type !== "base" &&
-          track.type !== "user"
+      tracks.map((track) =>
+        track.id === id
+          ? {
+              ...track,
+              visible: !track.visible,
+            }
+          : track
       )
     );
   };
@@ -61,10 +80,17 @@ function StudioProvider({ children }) {
       value={{
         tracks,
         setTracks,
+
         masterVolume,
         setMasterVolume,
+
+        layout,
+        setLayout,
+
         addTrack,
         removeTrack,
+
+        toggleTrackVisibility,
       }}
     >
       {children}

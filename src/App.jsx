@@ -1,3 +1,4 @@
+import WorkspacePanel from "./components/WorkspacePanel";
 import Header from "./components/Header";
 import Track from "./components/Track";
 import MasterPanel from "./components/MasterPanel";
@@ -7,7 +8,11 @@ import { useContext } from "react";
 import { StudioContext } from "./context/StudioContext";
 
 function App() {
-  const { tracks, addTrack } = useContext(StudioContext);
+  const {
+  tracks,
+  addTrack,
+  layout,
+} = useContext(StudioContext);
 
   return (
     <>
@@ -29,16 +34,20 @@ function App() {
           </span>
         </div>
 
-        <div className="studio-content">
-          <div className="tracks-container">
-            {tracks.map((track) => (
-              <Track
-                key={track.id}
-                id={track.id}
-                title={track.name}
-              />
-            ))}
-          </div>
+       <div className="studio-content">
+
+  <WorkspacePanel />
+<div className={`tracks-container layout-${layout}`}>
+  {tracks
+    .filter((track) => track.visible)
+    .map((track) => (
+      <Track
+        key={track.id}
+        id={track.id}
+        title={track.name}
+      />
+    ))}
+</div>
 
           <MasterPanel />
         </div>
